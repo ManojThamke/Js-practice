@@ -1,0 +1,657 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#7F77DD;--accent2:#1D9E75;--accent3:#D85A30;--accent4:#BA7517;--bg:var(--color-background-primary);--bg2:var(--color-background-secondary);--border:var(--color-border-tertiary);--text:var(--color-text-primary);--muted:var(--color-text-secondary)}
+body{font-family:var(--font-sans);background:transparent}
+.lesson{max-width:700px;padding:1rem 0}
+.slide{display:none;animation:fadeIn 0.4s ease}
+.slide.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.slide-header{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem}
+.badge{background:#EEEDFE;color:#3C3489;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:.4px}
+.slide-title{font-size:20px;font-weight:500;color:var(--text)}
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.code-wrap{background:#1a1a2e;border-radius:10px;overflow:hidden;margin:1rem 0;font-family:var(--font-mono)}
+.code-bar{background:#12122a;display:flex;align-items:center;gap:6px;padding:8px 14px}
+.dot{width:10px;height:10px;border-radius:50%}
+.code-label{font-size:11px;color:#666;margin-left:6px}
+.code-body{padding:14px 16px;font-size:13px;line-height:1.8;color:#c9d1d9}
+.line{display:block;padding:1px 0}
+.kw{color:#ff79c6}.fn{color:#50fa7b}.str{color:#f1fa8c}.cm{color:#6272a4}.num{color:#bd93f9}.op{color:#ff79c6}.br{color:#f8f8f2}
+.highlight-line{background:rgba(127,119,221,0.18);border-radius:3px;display:block;margin:0 -16px;padding:1px 16px}
+.big-o-badge{display:inline-block;background:#EEEDFE;color:#3C3489;font-family:var(--font-mono);font-size:15px;font-weight:500;padding:6px 16px;border-radius:8px;margin:8px 0}
+.big-o-badge.green{background:#EAF3DE;color:#27500A}
+.big-o-badge.amber{background:#FAEEDA;color:#633806}
+.big-o-badge.red{background:#FCEBEB;color:#791F1F}
+.big-o-badge.teal{background:#E1F5EE;color:#085041}
+.explain-box{border-left:3px solid var(--accent);padding:10px 14px;background:var(--bg2);border-radius:0 8px 8px 0;margin:10px 0;font-size:14px;color:var(--text);line-height:1.6}
+.explain-box.green{border-left-color:#1D9E75}
+.explain-box.amber{border-left-color:#BA7517}
+.explain-box.red{border-left-color:#D85A30}
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1rem 0}
+.rule-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:12px 14px}
+.rule-num{font-size:24px;font-weight:500;margin-bottom:4px}
+.rule-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
+.rule-formula{font-family:var(--font-mono);font-size:13px;background:#EEEDFE;color:#3C3489;display:inline-block;padding:3px 10px;border-radius:6px;margin-bottom:6px}
+.rule-desc{font-size:13px;color:var(--muted);line-height:1.5}
+.complexity-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.complexity-row:last-child{border-bottom:none}
+.complexity-name{font-family:var(--font-mono);font-weight:500;font-size:13px;width:90px;flex-shrink:0}
+.complexity-label{font-size:13px;color:var(--muted);flex:1}
+.perf-bar{height:8px;border-radius:4px;background:#EAF3DE}
+.perf-bar.p5{background:#1D9E75;width:100%}
+.perf-bar.p4{background:#639922;width:80%}
+.perf-bar.p3{background:#BA7517;width:55%}
+.perf-bar.p2{background:#D85A30;width:35%}
+.perf-bar.p1{background:#E24B4A;width:18%}
+.perf-bar.p0{background:#A32D2D;width:8%}
+.op-table{width:100%;border-collapse:collapse;font-size:13px}
+.op-table th{text-align:left;color:var(--muted);font-weight:500;font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border)}
+.op-table td{padding:9px 10px;border-bottom:0.5px solid var(--border);color:var(--text)}
+.op-table tr:last-child td{border-bottom:none}
+.step-flow{display:flex;align-items:flex-start;gap:0;margin:1rem 0}
+.step-item{flex:1;text-align:center;position:relative}
+.step-item:not(:last-child)::after{content:'';position:absolute;top:18px;right:-10px;width:20px;height:2px;background:var(--border)}
+.step-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;margin:0 auto 8px;color:#fff}
+.step-label{font-size:12px;font-weight:500;color:var(--text);margin-bottom:3px}
+.step-sub{font-size:11px;color:var(--muted);line-height:1.4;padding:0 4px}
+.viz-area{margin:1rem 0}
+.array-boxes{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+.abox{width:48px;height:48px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px solid var(--border);background:var(--bg2);transition:all 0.4s ease}
+.abox .val{font-family:var(--font-mono);font-weight:500;font-size:15px;color:var(--text)}
+.abox .idx{font-size:10px;color:var(--muted);margin-top:2px}
+.abox.active-box{border-color:#7F77DD;background:#EEEDFE}
+.abox.active-box .val{color:#3C3489}
+.abox.highlight-box{border-color:#1D9E75;background:#E1F5EE}
+.abox.highlight-box .val{color:#085041}
+.abox.faded{opacity:0.3}
+.viz-label{text-align:center;font-size:13px;color:var(--muted);margin-top:8px}
+.controls-row{display:flex;gap:10px;flex-wrap:wrap;margin:1rem 0}
+.btn-ctrl{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;color:var(--text);font-family:var(--font-sans);transition:background 0.15s}
+.btn-ctrl:hover{background:var(--border)}
+.btn-ctrl.active-btn{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 0 0;border-top:0.5px solid var(--border);margin-top:1.5rem}
+.nav-btn{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:8px 20px;font-size:13px;cursor:pointer;color:var(--text);font-family:var(--font-sans);display:flex;align-items:center;gap:6px;transition:background 0.15s}
+.nav-btn:hover{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.nav-btn:disabled{opacity:0.35;cursor:default}
+.nav-btn:disabled:hover{background:var(--bg2);color:var(--text);border-color:var(--border)}
+.progress{display:flex;gap:5px}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.3s}
+.prog-dot.done{background:#7F77DD}
+.slide-count{font-size:12px;color:var(--muted)}
+.quiz-opts{display:grid;gap:8px;margin:1rem 0}
+.quiz-opt{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;cursor:pointer;color:var(--text);text-align:left;font-family:var(--font-sans);transition:all 0.2s}
+.quiz-opt:hover{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+.quiz-opt.correct{background:#EAF3DE;border-color:#63992280;color:#27500A}
+.quiz-opt.wrong{background:#FCEBEB;border-color:#E24B4A80;color:#791F1F}
+.quiz-feedback{font-size:13px;padding:10px 14px;border-radius:8px;margin-top:8px;line-height:1.5}
+.quiz-feedback.correct{background:#EAF3DE;color:#27500A}
+.quiz-feedback.wrong{background:#FCEBEB;color:#791F1F}
+.cheatsheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:1rem 0}
+.cs-item{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.cs-topic{font-size:13px;color:var(--text)}
+.cs-comp{font-family:var(--font-mono);font-size:12px;font-weight:500}
+.practice-item{border-left:3px solid var(--border);padding:8px 12px;margin:8px 0;border-radius:0 8px 8px 0;background:var(--bg2)}
+.practice-item.easy{border-left-color:#1D9E75}
+.practice-item.medium{border-left-color:#BA7517}
+.practice-name{font-size:14px;font-weight:500;color:var(--text)}
+.practice-hint{font-size:12px;color:var(--muted);margin-top:3px}
+.next-day{background:linear-gradient(135deg,#EEEDFE,#E1F5EE);border-radius:12px;padding:1.25rem;text-align:center;margin-top:1rem;border:0.5px solid #AFA9EC}
+.next-day-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:6px}
+.next-day-sub{font-size:13px;color:#085041}
+.shift-demo{display:flex;flex-direction:column;gap:12px;margin:1rem 0}
+.shift-row{display:flex;align-items:center;gap:10px}
+.shift-label{font-size:12px;color:var(--muted);width:50px;flex-shrink:0}
+.arrow-anim{font-size:20px;color:#D85A30;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.memory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1rem 0}
+.mem-card{border-radius:10px;padding:12px;text-align:center;border:0.5px solid var(--border)}
+.mem-type{font-size:12px;color:var(--muted);margin-bottom:4px}
+.mem-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px}
+.mem-comp{font-family:var(--font-mono);font-size:13px;font-weight:500}
+.mem-card.c1{background:#EEEDFE}.mem-card.c1 .mem-comp{color:#3C3489}
+.mem-card.c2{background:#EAF3DE}.mem-card.c2 .mem-comp{color:#27500A}
+.mem-card.c3{background:#FAEEDA}.mem-card.c3 .mem-comp{color:#633806}
+</style>
+
+<div class="lesson" role="main">
+<h2 class="sr-only">Day 1 — Big-O Notation interactive teaching lesson</h2>
+
+<div id="slide-0" class="slide active">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  INTRO</span>
+    <h2 class="slide-title">Welcome to Big-O Notation</h2>
+  </div>
+  <div class="card">
+    <p style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px">Why does algorithm efficiency matter?</p>
+    <p style="font-size:14px;color:var(--muted);line-height:1.6">Imagine searching for a book. In a stack of 10 books, any method works fine. But in a library with <strong style="color:var(--text)">10 million books</strong>, a bad approach could take days while a smart one takes milliseconds.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1rem 0">
+    <div class="card" style="border-left:3px solid #1D9E75;border-radius:0 10px 10px 0">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:4px">Smart algorithm — 10M books</p>
+      <p style="font-size:24px;font-weight:500;color:#1D9E75">~0.02ms</p>
+    </div>
+    <div class="card" style="border-left:3px solid #D85A30;border-radius:0 10px 10px 0">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:4px">Bad algorithm — 10M books</p>
+      <p style="font-size:24px;font-weight:500;color:#D85A30">~hours</p>
+    </div>
+  </div>
+  <div class="card">
+    <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px">Big-O notation answers one question:</p>
+    <p style="font-size:16px;color:#3C3489;font-weight:500;background:#EEEDFE;padding:10px 14px;border-radius:8px;font-style:italic">"How does my algorithm's performance scale as the input grows?"</p>
+  </div>
+  <div class="card">
+    <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px">What we cover today:</p>
+    <div style="display:grid;gap:6px">
+      <div style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"><i class="ti ti-circle-check" style="color:#1D9E75;font-size:16px" aria-hidden="true"></i> Time complexity — how fast?</div>
+      <div style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"><i class="ti ti-circle-check" style="color:#1D9E75;font-size:16px" aria-hidden="true"></i> Space complexity — how much memory?</div>
+      <div style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"><i class="ti ti-circle-check" style="color:#1D9E75;font-size:16px" aria-hidden="true"></i> The 4 golden rules</div>
+      <div style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"><i class="ti ti-circle-check" style="color:#1D9E75;font-size:16px" aria-hidden="true"></i> JavaScript array operations</div>
+      <div style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"><i class="ti ti-circle-check" style="color:#1D9E75;font-size:16px" aria-hidden="true"></i> Interview thinking framework</div>
+    </div>
+  </div>
+</div>
+
+<div id="slide-1" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  COMPLEXITY CLASSES</span>
+    <h2 class="slide-title">The complexity ladder</h2>
+  </div>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.6">Each rung of this ladder shows how many operations your algorithm does as input <code style="background:var(--bg2);padding:1px 6px;border-radius:4px;font-size:13px">n</code> grows. The lower, the better.</p>
+  <div class="card">
+    <div class="complexity-row">
+      <span class="complexity-name" style="color:#1D9E75">O(1)</span>
+      <span class="complexity-label">Constant — doesn't grow at all</span>
+      <div style="width:120px"><div class="perf-bar p5"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="complexity-name" style="color:#639922">O(log n)</span>
+      <span class="complexity-label">Logarithmic — halves the problem each step</span>
+      <div style="width:120px"><div class="perf-bar p4"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="complexity-name" style="color:#BA7517">O(n)</span>
+      <span class="complexity-label">Linear — grows with input size</span>
+      <div style="width:120px"><div class="perf-bar p3"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="complexity-name" style="color:#D85A30">O(n log n)</span>
+      <span class="complexity-label">Linearithmic — fast sorts like merge sort</span>
+      <div style="width:120px"><div class="perf-bar p2"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="complexity-name" style="color:#E24B4A">O(n²)</span>
+      <span class="complexity-label">Quadratic — nested loops, gets slow fast</span>
+      <div style="width:120px"><div class="perf-bar p1"></div></div>
+    </div>
+    <div class="complexity-row">
+      <span class="complexity-name" style="color:#A32D2D">O(2ⁿ)</span>
+      <span class="complexity-label">Exponential — doubles per input, unusable</span>
+      <div style="width:120px"><div class="perf-bar p0"></div></div>
+    </div>
+  </div>
+  <div class="card" style="background:#EEEDFE;border-color:#AFA9EC">
+    <p style="font-size:13px;color:#3C3489;font-weight:500">Try this mental model:</p>
+    <p style="font-size:13px;color:#534AB7;margin-top:4px;line-height:1.6">If n = 1,000 — O(1) does 1 op, O(n) does 1,000, O(n²) does <strong>1,000,000</strong>, and O(2ⁿ) is more operations than atoms in the universe.</p>
+  </div>
+</div>
+
+<div id="slide-2" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  O(1) DEMO</span>
+    <h2 class="slide-title">Constant time — O(1)</h2>
+  </div>
+  <div class="explain-box green" style="margin-bottom:1rem">
+    No matter how large the array, accessing by index always takes <strong>exactly one step</strong>. The size of n doesn't matter at all.
+  </div>
+  <div class="code-wrap">
+    <div class="code-bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#ffbd2e"></div><div class="dot" style="background:#28c840"></div><span class="code-label">JavaScript</span></div>
+    <div class="code-body">
+      <span class="line"><span class="kw">const</span> arr = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>];</span>
+      <span class="line"> </span>
+      <span class="line"><span class="cm">// Access by index — always 1 step</span></span>
+      <span class="highlight-line"><span class="fn">console</span>.<span class="fn">log</span>(arr[<span class="num">0</span>]);  <span class="cm">// O(1) ← instant</span></span>
+      <span class="line"><span class="fn">console</span>.<span class="fn">log</span>(arr[<span class="num">4</span>]);  <span class="cm">// O(1) ← still instant</span></span>
+      <span class="line"> </span>
+      <span class="line"><span class="cm">// Doesn't matter if array has 5 or 5 million items</span></span>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Click on any box to access it — notice it's always instant:</p>
+  <div class="viz-area">
+    <div class="array-boxes" id="o1-boxes"></div>
+    <div class="viz-label" id="o1-label">Click any element</div>
+  </div>
+  <div style="margin-top:1rem;display:flex;align-items:center;gap:12px">
+    <span class="big-o-badge green">O(1)</span>
+    <span style="font-size:14px;color:var(--muted)">Same speed regardless of array size. Excellent performance.</span>
+  </div>
+  <div class="explain-box green">
+    Other O(1) examples: <code>push()</code>, <code>pop()</code>, hash map lookup, variable assignment.
+  </div>
+</div>
+
+<div id="slide-3" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  O(n) DEMO</span>
+    <h2 class="slide-title">Linear time — O(n)</h2>
+  </div>
+  <div class="explain-box amber" style="margin-bottom:1rem">
+    When you loop through every element once, the work grows <strong>directly with n</strong>. Double the input → double the work.
+  </div>
+  <div class="code-wrap">
+    <div class="code-bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#ffbd2e"></div><div class="dot" style="background:#28c840"></div><span class="code-label">JavaScript</span></div>
+    <div class="code-body">
+      <span class="line"><span class="kw">const</span> arr = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>];</span>
+      <span class="line"> </span>
+      <span class="line"><span class="cm">// Loop visits each element — n steps</span></span>
+      <span class="highlight-line"><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i < arr.length; i++) {</span>
+      <span class="line">  <span class="fn">console</span>.<span class="fn">log</span>(arr[i]);  <span class="cm">// runs n times</span></span>
+      <span class="line">}</span>
+    </div>
+  </div>
+  <div class="controls-row">
+    <button class="btn-ctrl" onclick="runLinear()"><i class="ti ti-player-play" aria-hidden="true"></i> Animate loop</button>
+    <button class="btn-ctrl" onclick="resetLinear()"><i class="ti ti-refresh" aria-hidden="true"></i> Reset</button>
+  </div>
+  <div class="array-boxes" id="on-boxes" style="justify-content:flex-start;gap:4px"></div>
+  <div class="viz-label" id="on-label" style="text-align:left;margin-top:8px">Press animate to see each step</div>
+  <div style="margin-top:1rem;display:flex;align-items:center;gap:12px">
+    <span class="big-o-badge amber">O(n)</span>
+    <span style="font-size:14px;color:var(--muted)">Scales linearly. Acceptable for most tasks.</span>
+  </div>
+</div>
+
+<div id="slide-4" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  O(n²) DEMO</span>
+    <h2 class="slide-title">Quadratic time — O(n²)</h2>
+  </div>
+  <div class="explain-box red" style="margin-bottom:1rem">
+    Nested loops multiply work. For each of the n outer iterations, you do n inner iterations. That's <strong>n × n = n² operations</strong>.
+  </div>
+  <div class="code-wrap">
+    <div class="code-bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#ffbd2e"></div><div class="dot" style="background:#28c840"></div><span class="code-label">JavaScript</span></div>
+    <div class="code-body">
+      <span class="line"><span class="cm">// Nested loops — n × n steps</span></span>
+      <span class="highlight-line"><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i < n; i++) {       <span class="cm">// n times</span></span>
+      <span class="highlight-line">  <span class="kw">for</span> (<span class="kw">let</span> j = <span class="num">0</span>; j < n; j++) {     <span class="cm">// n times each</span></span>
+      <span class="line">    <span class="fn">console</span>.<span class="fn">log</span>(i, j);  <span class="cm">// n² total ops</span></span>
+      <span class="line">  }</span>
+      <span class="line">}</span>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin:1rem 0 8px">Watch how operations explode as n grows:</p>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="n2-grid"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:0.5rem">
+    <span class="big-o-badge red">O(n²)</span>
+    <span style="font-size:14px;color:var(--muted)">Dangerous for large inputs. Look for nested loops in code reviews!</span>
+  </div>
+  <div class="explain-box red">
+    Common sources of O(n²): bubble sort, checking all pairs in an array, naive duplicate detection.
+  </div>
+</div>
+
+<div id="slide-5" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  GOLDEN RULES</span>
+    <h2 class="slide-title">The 4 golden rules</h2>
+  </div>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.6">When calculating Big-O, follow these rules to simplify your answer:</p>
+  <div class="rule-grid">
+    <div class="rule-card">
+      <div class="rule-num" style="color:#7F77DD">1</div>
+      <div class="rule-title">Ignore constants</div>
+      <div class="rule-formula">O(5n) = O(n)</div>
+      <div class="rule-desc">Constant multipliers vanish at scale. Whether it loops 2× or 100× per element — if it's linear, it's O(n).</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="color:#1D9E75">2</div>
+      <div class="rule-title">Add sequential ops</div>
+      <div class="rule-formula">O(n)+O(n)=O(n)</div>
+      <div class="rule-desc">Two separate loops one after another → still linear. You don't multiply — you add, then simplify.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="color:#D85A30">3</div>
+      <div class="rule-title">Multiply nested ops</div>
+      <div class="rule-formula">O(n)×O(n)=O(n²)</div>
+      <div class="rule-desc">Loops inside loops multiply. This is why nested loops are expensive.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="color:#BA7517">4</div>
+      <div class="rule-title">Keep dominant term</div>
+      <div class="rule-formula">n²+n+1 → O(n²)</div>
+      <div class="rule-desc">Drop smaller terms. At large n, n² dwarfs n and 1 completely. Only the fastest-growing term matters.</div>
+    </div>
+  </div>
+  <div class="card" style="background:#EAF3DE;border-color:#9FE1CB">
+    <p style="font-size:13px;font-weight:500;color:#27500A;margin-bottom:6px">Quick quiz — simplify this:</p>
+    <p style="font-family:var(--font-mono);font-size:14px;color:#085041;margin-bottom:10px">O(3n² + 100n + 500) = ?</p>
+    <div id="quiz1" class="quiz-opts">
+      <button class="quiz-opt" onclick="checkQ1(this,'wrong')">O(3n²)</button>
+      <button class="quiz-opt" onclick="checkQ1(this,'correct')">O(n²)</button>
+      <button class="quiz-opt" onclick="checkQ1(this,'wrong')">O(n)</button>
+      <button class="quiz-opt" onclick="checkQ1(this,'wrong')">O(3n² + 100n)</button>
+    </div>
+    <div id="q1-feedback" style="display:none"></div>
+  </div>
+</div>
+
+<div id="slide-6" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  SPACE COMPLEXITY</span>
+    <h2 class="slide-title">Space complexity & JS memory</h2>
+  </div>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.6">Space complexity measures how much <strong style="color:var(--text)">extra memory</strong> your algorithm uses as input grows. Just as important as time!</p>
+  <div class="memory-grid">
+    <div class="mem-card c1">
+      <div class="mem-type">Number, Boolean</div>
+      <div class="mem-name">Primitives</div>
+      <div class="mem-comp" style="color:#3C3489">O(1)</div>
+      <div style="font-size:11px;color:#534AB7;margin-top:4px">Fixed size always</div>
+    </div>
+    <div class="mem-card c2">
+      <div class="mem-type">String of length n</div>
+      <div class="mem-name">Strings</div>
+      <div class="mem-comp" style="color:#27500A">O(n)</div>
+      <div style="font-size:11px;color:#3B6D11;margin-top:4px">Grows with length</div>
+    </div>
+    <div class="mem-card c3">
+      <div class="mem-type">Array / Object</div>
+      <div class="mem-name">Collections</div>
+      <div class="mem-comp" style="color:#633806">O(n)</div>
+      <div style="font-size:11px;color:#854F0B;margin-top:4px">Grows with items</div>
+    </div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#ffbd2e"></div><div class="dot" style="background:#28c840"></div><span class="code-label">Space examples</span></div>
+    <div class="code-body">
+      <span class="line"><span class="cm">// O(1) space — fixed variables</span></span>
+      <span class="highlight-line"><span class="kw">let</span> count = <span class="num">0</span>;     <span class="cm">// always 1 number in memory</span></span>
+      <span class="line"> </span>
+      <span class="line"><span class="cm">// O(n) space — grows with input</span></span>
+      <span class="highlight-line"><span class="kw">const</span> copy = [...arr];  <span class="cm">// n elements in memory</span></span>
+      <span class="line"> </span>
+      <span class="line"><span class="cm">// O(n) space — hash map</span></span>
+      <span class="highlight-line"><span class="kw">const</span> map = <span class="kw">new</span> <span class="fn">Map</span>();  <span class="cm">// stores up to n entries</span></span>
+    </div>
+  </div>
+  <div class="card" style="background:#FAEEDA;border-color:#FAC775">
+    <p style="font-size:13px;font-weight:500;color:#633806;margin-bottom:4px">JavaScript insight — arrays are objects!</p>
+    <p style="font-size:13px;color:#854F0B;line-height:1.6">In JS, arrays are specialized objects with numeric keys. This is why <code style="background:#FFE8B0;padding:1px 5px;border-radius:3px">push()</code> is O(1) — it adds a new key. But <code style="background:#FFE8B0;padding:1px 5px;border-radius:3px">shift()</code> is O(n) — it has to renumber every key.</p>
+  </div>
+  <div class="shift-demo">
+    <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px">Visual: why shift() is slow</p>
+    <div class="shift-row">
+      <span class="shift-label" style="color:var(--muted);font-size:11px">Before:</span>
+      <div style="display:flex;gap:4px">
+        <div class="abox" style="width:42px;height:42px;border-color:#E24B4A;background:#FCEBEB"><span class="val" style="font-size:13px;color:#791F1F">10</span><span class="idx" style="color:#A32D2D">[0]</span></div>
+        <div class="abox" style="width:42px;height:42px"><span class="val" style="font-size:13px">20</span><span class="idx">[1]</span></div>
+        <div class="abox" style="width:42px;height:42px"><span class="val" style="font-size:13px">30</span><span class="idx">[2]</span></div>
+        <div class="abox" style="width:42px;height:42px"><span class="val" style="font-size:13px">40</span><span class="idx">[3]</span></div>
+      </div>
+      <span style="font-size:12px;color:#D85A30;margin-left:8px">remove [0]</span>
+    </div>
+    <div class="shift-row">
+      <span class="shift-label" style="color:var(--muted);font-size:11px">After:</span>
+      <div style="display:flex;gap:4px">
+        <div class="abox" style="width:42px;height:42px;border-color:#1D9E75;background:#E1F5EE"><span class="val" style="font-size:13px;color:#085041">20</span><span class="idx" style="color:#0F6E56">[0]→</span></div>
+        <div class="abox" style="width:42px;height:42px;border-color:#1D9E75;background:#E1F5EE"><span class="val" style="font-size:13px;color:#085041">30</span><span class="idx" style="color:#0F6E56">[1]→</span></div>
+        <div class="abox" style="width:42px;height:42px;border-color:#1D9E75;background:#E1F5EE"><span class="val" style="font-size:13px;color:#085041">40</span><span class="idx" style="color:#0F6E56">[2]→</span></div>
+      </div>
+      <span style="font-size:12px;color:#1D9E75;margin-left:8px">3 re-indexes! → O(n)</span>
+    </div>
+  </div>
+</div>
+
+<div id="slide-7" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  ARRAY OPS</span>
+    <h2 class="slide-title">Array operation cheatsheet</h2>
+  </div>
+  <div class="card">
+    <table class="op-table">
+      <thead><tr><th>Operation</th><th>What it does</th><th>Complexity</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><code>arr[i]</code></td><td>Read by index</td><td><span style="color:#1D9E75;font-family:var(--font-mono);font-weight:500">O(1)</span></td><td>Direct memory address</td></tr>
+        <tr><td><code>push(x)</code></td><td>Add to end</td><td><span style="color:#1D9E75;font-family:var(--font-mono);font-weight:500">O(1)</span></td><td>Append new key</td></tr>
+        <tr><td><code>pop()</code></td><td>Remove from end</td><td><span style="color:#1D9E75;font-family:var(--font-mono);font-weight:500">O(1)</span></td><td>Delete last key</td></tr>
+        <tr><td><code>shift()</code></td><td>Remove from front</td><td><span style="color:#E24B4A;font-family:var(--font-mono);font-weight:500">O(n)</span></td><td>Re-index everything</td></tr>
+        <tr><td><code>unshift(x)</code></td><td>Add to front</td><td><span style="color:#E24B4A;font-family:var(--font-mono);font-weight:500">O(n)</span></td><td>Re-index everything</td></tr>
+        <tr><td><code>includes(x)</code></td><td>Search array</td><td><span style="color:#BA7517;font-family:var(--font-mono);font-weight:500">O(n)</span></td><td>Scan each element</td></tr>
+        <tr><td><code>splice()</code></td><td>Insert/remove mid</td><td><span style="color:#E24B4A;font-family:var(--font-mono);font-weight:500">O(n)</span></td><td>Shifts elements</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card" style="background:#FCEBEB;border-color:#F7C1C1">
+    <p style="font-size:13px;font-weight:500;color:#791F1F;margin-bottom:6px">Common interview mistake:</p>
+    <div class="code-wrap" style="margin:0">
+      <div class="code-bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#ffbd2e"></div><div class="dot" style="background:#28c840"></div><span class="code-label">Bad — O(n²) hidden!</span></div>
+      <div class="code-body" style="font-size:12px">
+        <span class="line"><span class="cm">// Looks innocent, is actually O(n²):</span></span>
+        <span class="highlight-line"><span class="kw">while</span>(arr.length > <span class="num">0</span>) {</span>
+        <span class="highlight-line">  arr.<span class="fn">shift</span>();  <span class="cm">// O(n) inside O(n) loop!</span></span>
+        <span class="line">}</span>
+        <span class="line"> </span>
+        <span class="line"><span class="cm">// Fix — use pop() instead: O(n) total</span></span>
+        <span class="line"><span class="kw">while</span>(arr.length > <span class="num">0</span>) arr.<span class="fn">pop</span>();</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="slide-8" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  INTERVIEW FRAMEWORK</span>
+    <h2 class="slide-title">How to think in interviews</h2>
+  </div>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.6">Top companies don't just want the right answer — they want to see <strong style="color:var(--text)">your thought process</strong>. Always follow this 4-step framework:</p>
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-circle" style="background:#7F77DD">1</div>
+      <div class="step-label">Brute Force</div>
+      <div class="step-sub">Get it working first, any complexity</div>
+    </div>
+    <div class="step-item">
+      <div class="step-circle" style="background:#1D9E75">2</div>
+      <div class="step-label">Find Bottleneck</div>
+      <div class="step-sub">Spot the slow part — nested loops? searches?</div>
+    </div>
+    <div class="step-item">
+      <div class="step-circle" style="background:#BA7517">3</div>
+      <div class="step-label">Pick Pattern</div>
+      <div class="step-sub">Hash map? Two pointers? Sliding window?</div>
+    </div>
+    <div class="step-item">
+      <div class="step-circle" style="background:#D85A30">4</div>
+      <div class="step-label">Optimize</div>
+      <div class="step-sub">Rewrite with better complexity</div>
+    </div>
+  </div>
+  <div class="code-wrap">
+    <div class="code-bar"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#ffbd2e"></div><div class="dot" style="background:#28c840"></div><span class="code-label">Two Sum — applying the framework</span></div>
+    <div class="code-body" style="font-size:12px">
+      <span class="line"><span class="cm">// STEP 1: Brute force — O(n²)</span></span>
+      <span class="line"><span class="kw">function</span> <span class="fn">twoSum_slow</span>(nums, target) {</span>
+      <span class="line">  <span class="kw">for</span> (<span class="kw">let</span> i=<span class="num">0</span>; i&lt;nums.length; i++)     <span class="cm">// O(n)</span></span>
+      <span class="line">    <span class="kw">for</span> (<span class="kw">let</span> j=i+<span class="num">1</span>; j&lt;nums.length; j++)  <span class="cm">// O(n)</span></span>
+      <span class="line">      <span class="kw">if</span> (nums[i]+nums[j]===target) <span class="kw">return</span> [i,j];</span>
+      <span class="line">}</span>
+      <span class="line"> </span>
+      <span class="cm">// STEP 3-4: Hash Map pattern → O(n)</span></span>
+      <span class="line"><span class="kw">function</span> <span class="fn">twoSum_fast</span>(nums, target) {</span>
+      <span class="line">  <span class="kw">const</span> seen = <span class="kw">new</span> <span class="fn">Map</span>();</span>
+      <span class="highlight-line">  <span class="kw">for</span> (<span class="kw">let</span> i=<span class="num">0</span>; i&lt;nums.length; i++) {  <span class="cm">// O(n)</span></span>
+      <span class="highlight-line">    <span class="kw">if</span> (seen.<span class="fn">has</span>(target-nums[i]))          <span class="cm">// O(1) lookup!</span></span>
+      <span class="highlight-line">      <span class="kw">return</span> [seen.<span class="fn">get</span>(target-nums[i]), i];</span>
+      <span class="highlight-line">    seen.<span class="fn">set</span>(nums[i], i);</span>
+      <span class="line">  }</span>
+      <span class="line">}</span>
+    </div>
+  </div>
+  <div class="explain-box" style="border-left-color:#7F77DD">
+    The hash map converts an O(n) inner search into an O(1) lookup — turning O(n²) into O(n). <strong style="color:var(--text)">This is the #1 optimization pattern in interviews.</strong>
+  </div>
+</div>
+
+<div id="slide-9" class="slide">
+  <div class="slide-header">
+    <span class="badge">DAY 1  •  CHEAT SHEET</span>
+    <h2 class="slide-title">Quick reference + practice</h2>
+  </div>
+  <p style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px">Day 1 cheat sheet:</p>
+  <div class="cheatsheet-grid">
+    <div class="cs-item"><span class="cs-topic">Array index access</span><span class="cs-comp" style="color:#1D9E75">O(1)</span></div>
+    <div class="cs-item"><span class="cs-topic">push() / pop()</span><span class="cs-comp" style="color:#1D9E75">O(1)</span></div>
+    <div class="cs-item"><span class="cs-topic">shift() / unshift()</span><span class="cs-comp" style="color:#E24B4A">O(n)</span></div>
+    <div class="cs-item"><span class="cs-topic">Linear search</span><span class="cs-comp" style="color:#BA7517">O(n)</span></div>
+    <div class="cs-item"><span class="cs-topic">Nested loops</span><span class="cs-comp" style="color:#E24B4A">O(n²)</span></div>
+    <div class="cs-item"><span class="cs-topic">Binary search</span><span class="cs-comp" style="color:#639922">O(log n)</span></div>
+    <div class="cs-item"><span class="cs-topic">Merge sort</span><span class="cs-comp" style="color:#BA7517">O(n log n)</span></div>
+    <div class="cs-item"><span class="cs-topic">Hash map lookup</span><span class="cs-comp" style="color:#1D9E75">O(1)</span></div>
+  </div>
+  <p style="font-size:13px;font-weight:500;color:var(--text);margin:1rem 0 8px">Practice problems:</p>
+  <div class="practice-item easy"><div class="practice-name">Find maximum element</div><div class="practice-hint">One loop, track max variable — O(n)</div></div>
+  <div class="practice-item easy"><div class="practice-name">Reverse a string</div><div class="practice-hint">Two-pointer swap from both ends — O(n)</div></div>
+  <div class="practice-item medium"><div class="practice-name">Two Sum</div><div class="practice-hint">Brute O(n²) → Hash Map O(n)</div></div>
+  <div class="practice-item medium"><div class="practice-name">Contains Duplicate</div><div class="practice-hint">Hash Set: add and check — O(n)</div></div>
+  <div class="next-day">
+    <div class="next-day-title">Coming next — Day 2</div>
+    <div class="next-day-sub">JavaScript Execution Context & Event Loop</div>
+    <button onclick="sendPrompt('Teach me Day 2: JavaScript Execution Context and Event Loop in the same style')" style="margin-top:12px;background:#7F77DD;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;cursor:pointer;font-family:var(--font-sans)">Start Day 2 lesson ↗</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn" id="prev-btn" onclick="navigate(-1)" disabled>
+    <i class="ti ti-arrow-left" aria-hidden="true"></i> Previous
+  </button>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+    <div class="progress" id="progress-dots"></div>
+    <span class="slide-count" id="slide-count">Slide 1 of 10</span>
+  </div>
+  <button class="nav-btn" id="next-btn" onclick="navigate(1)">
+    Next <i class="ti ti-arrow-right" aria-hidden="true"></i>
+  </button>
+</div>
+</div>
+
+<script>
+const TOTAL = 10;
+let cur = 0;
+let linearRunning = false;
+
+function buildProgress(){
+  const d = document.getElementById('progress-dots');
+  d.innerHTML = '';
+  for(let i=0;i<TOTAL;i++){
+    const dot = document.createElement('div');
+    dot.className = 'prog-dot' + (i<=cur?' done':'');
+    d.appendChild(dot);
+  }
+}
+
+function navigate(dir){
+  document.getElementById('slide-'+cur).classList.remove('active');
+  cur = Math.max(0,Math.min(TOTAL-1, cur+dir));
+  document.getElementById('slide-'+cur).classList.add('active');
+  document.getElementById('prev-btn').disabled = cur===0;
+  document.getElementById('next-btn').disabled = cur===TOTAL-1;
+  document.getElementById('slide-count').textContent = 'Slide '+(cur+1)+' of '+TOTAL;
+  buildProgress();
+  if(cur===2) initO1();
+  if(cur===3) initOn();
+  if(cur===4) initN2();
+}
+
+function initO1(){
+  const vals = [10,20,30,40,50];
+  const c = document.getElementById('o1-boxes');
+  c.innerHTML='';
+  vals.forEach((v,i)=>{
+    const b = document.createElement('div');
+    b.className='abox';
+    b.innerHTML=`<span class="val">${v}</span><span class="idx">[${i}]</span>`;
+    b.onclick=()=>{
+      c.querySelectorAll('.abox').forEach(x=>x.className='abox');
+      b.className='abox highlight-box';
+      document.getElementById('o1-label').textContent=`arr[${i}] = ${v} — accessed in O(1), instantly!`;
+    };
+    c.appendChild(b);
+  });
+}
+
+function initOn(){
+  const vals=[10,20,30,40,50,60];
+  const c=document.getElementById('on-boxes');
+  c.innerHTML='';
+  vals.forEach((v,i)=>{
+    const b=document.createElement('div');
+    b.id='on-box-'+i;
+    b.className='abox';
+    b.innerHTML=`<span class="val">${v}</span><span class="idx">[${i}]</span>`;
+    c.appendChild(b);
+  });
+}
+
+async function runLinear(){
+  if(linearRunning) return;
+  linearRunning=true;
+  const vals=[10,20,30,40,50,60];
+  resetLinear();
+  for(let i=0;i<vals.length;i++){
+    if(i>0){
+      document.getElementById('on-box-'+(i-1)).className='abox';
+    }
+    const b=document.getElementById('on-box-'+i);
+    b.className='abox active-box';
+    document.getElementById('on-label').textContent=`Step ${i+1}/${vals.length}: visiting arr[${i}] = ${vals[i]}`;
+    await new Promise(r=>setTimeout(r,500));
+  }
+  document.getElementById('on-box-'+(vals.length-1)).className='abox highlight-box';
+  document.getElementById('on-label').textContent=`Done! Visited all ${vals.length} elements — O(n) = ${vals.length} steps`;
+  linearRunning=false;
+}
+
+function resetLinear(){
+  for(let i=0;i<6;i++){
+    const b=document.getElementById('on-box-'+i);
+    if(b) b.className='abox';
+  }
+  document.getElementById('on-label').textContent='Press animate to see each step';
+}
+
+function initN2(){
+  const ns=[1,5,10,100];
+  const g=document.getElementById('n2-grid');
+  g.innerHTML='';
+  ns.forEach(n=>{
+    const ops=n*n;
+    const col = n<=1?'#1D9E75':n<=5?'#BA7517':n<=10?'#D85A30':'#A32D2D';
+    const div=document.createElement('div');
+    div.style.cssText=`text-align:center;padding:14px 8px;border-radius:8px;border:0.5px solid var(--border);background:var(--bg2)`;
+    div.innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:4px">n = ${n}</div><div style="font-family:var(--font-mono);font-size:18px;font-weight:500;color:${col}">${ops.toLocaleString()}</div><div style="font-size:11px;color:var(--muted);margin-top:3px">operations</div>`;
+    g.appendChild(div);
+  });
+}
+
+function checkQ1(btn, result){
+  const opts=document.querySelectorAll('#quiz1 .quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  btn.className='quiz-opt '+result;
+  const fb=document.getElementById('q1-feedback');
+  fb.style.display='block';
+  if(result==='correct'){
+    fb.className='quiz-feedback correct';
+    fb.textContent='Correct! Apply rules: ignore constant 3 (rule 1), drop smaller terms n and 500 (rule 4). Only n² survives.';
+  } else {
+    fb.className='quiz-feedback wrong';
+    fb.textContent='Not quite. Apply rule 1 (ignore constants → drop the 3) and rule 4 (drop smaller terms n and 500). Answer: O(n²).';
+    document.querySelectorAll('#quiz1 .quiz-opt')[1].className='quiz-opt correct';
+  }
+}
+
+buildProgress();
+initO1();
+</script>

@@ -1,0 +1,16 @@
+var canPlantFlowers = function(flowerbed, n) {
+    let count = 0;
+    for (let i = 0; i < flowerbed.length; i++) {
+        let left = (i === 0) || (flowerbed[i - 1] === 0);
+        let right = (i === flowerbed.length - 1) || (flowerbed[i + 1] === 0);
+        if (left && right && flowerbed[i] === 0) {
+            flowerbed[i] = 1;
+            count++;
+        }
+    }
+    return count >= n;
+}
+
+let flowerbed = [1, 0, 0, 0, 1];
+let n = 3;
+console.log(canPlantFlowers(flowerbed, n)); 
